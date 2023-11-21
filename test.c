@@ -41,3 +41,12 @@ Test(arena, join_strings) {
 
   cr_assert(strcmp(result->head, "Hello World") == 0);
 }
+
+Test(arena, reset) {
+  Arena *arena = create_arena();
+  String *s0 = arena_create_string(arena, "Hello");
+  arena_reset(arena);
+  arena_create_string(arena, " World");
+
+  cr_assert(strcmp(s0->head, " World") == 0);
+}

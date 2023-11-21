@@ -16,6 +16,8 @@ int main() {
     printf("Value: %d\n", my_array[i]);
   }
 
+  arena_reset(arena);
+
   String *s0 = arena_create_string(arena, "Hello");
   prints(s0);
   puts("");
