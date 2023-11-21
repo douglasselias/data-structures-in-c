@@ -1,0 +1,52 @@
+/// infinite size arena (chain upgrades)
+/// using the mmu (no malloc)
+/// dynamic array that never relocates
+/// support sub-lifetime (pool allocator using free list) (malloc?)
+/// visualization && debugging (push & pop logs, timestamp)
+
+#pragma once
+
+#include <stdio.h>
+#include <stdlib.h>
+
+const int arena_size = 4096;
+
+typedef struct Arena Arena;
+struct Arena {
+  char *start;
+  char *current;
+  char *end;
+};
+
+Arena *create_arena() {
+  Arena *arena = malloc(sizeof(Arena));
+  arena->start = malloc(arena_size);
+  arena->current = arena->start;
+  arena->end = arena->start + arena_size;
+  return arena;
+}
+
+void *arena_alloc(Arena *arena, size_t size) {
+  if (arena->current + size <= arena->end) {
+    void *block = arena->current;
+    arena->current += size;
+    return block;
+  } else {
+    fprintf(stderr, "Arena out of memory\n");
+    exit(EXIT_FAILURE);
+  }
+}
+
+void destroy_arena(Arena *arena) { free(arena->start); }
+
+void print_arena(Arena *arena) {
+  char *iterator = arena->start;
+  int line = 0;
+  while (iterator < arena->current) {
+    printf("%d ", *iterator);
+    iterator++;
+    if (line != 0 && line % 8 == 0)
+      puts("");
+    line++;
+  }
+}

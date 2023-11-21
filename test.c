@@ -23,11 +23,21 @@ Test(queue, enqueue) {
   cr_assert(q.size == 0);
 }
 
-Test(string, join) {
+Test(string, join_strings) {
   String *s0 = create_string("Hello");
   String *s1 = create_string(" World");
 
-  String *result = join(s0, s1);
+  String *result = join_strings(s0, s1);
+
+  cr_assert(strcmp(result->head, "Hello World") == 0);
+}
+
+Test(arena, join_strings) {
+  Arena *arena = create_arena();
+  String *s0 = arena_create_string(arena, "Hello");
+  String *s1 = arena_create_string(arena, " World");
+
+  String *result = arena_join_strings(arena, s0, s1);
 
   cr_assert(strcmp(result->head, "Hello World") == 0);
 }
