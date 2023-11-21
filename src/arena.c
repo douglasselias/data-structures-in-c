@@ -37,6 +37,8 @@ void *arena_alloc(Arena *arena, size_t size) {
   }
 }
 
+void arena_reset(Arena *arena) { arena->current = arena->start; }
+
 void destroy_arena(Arena *arena) { free(arena->start); }
 
 void print_arena(Arena *arena) {
