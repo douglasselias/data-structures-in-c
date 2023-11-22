@@ -30,7 +30,7 @@ String *create_string(char *string) {
 String *join_strings(String *a, String *b) {
   String *str = malloc(sizeof(String));
   str->size = a->size + b->size;
-  char *c = malloc(sizeof(char) * str->size);
+  char *c = malloc(sizeof(a->head) * str->size);
   strcpy(c, a->head);
   strcpy(c + a->size, b->head);
   str->head = c;
@@ -55,7 +55,7 @@ String *arena_create_string(Arena *arena, char *string) {
 String *arena_join_strings(Arena *arena, String *a, String *b) {
   String *str = arena_alloc(arena, sizeof(String));
   str->size = a->size + b->size;
-  char *c = malloc(sizeof(char) * str->size);
+  char *c = malloc(sizeof(a->head) * str->size);
   strcpy(c, a->head);
   strcpy(c + a->size, b->head);
   str->head = c;
