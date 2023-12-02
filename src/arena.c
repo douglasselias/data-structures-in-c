@@ -42,13 +42,10 @@ void arena_reset(Arena *arena) { arena->current = arena->start; }
 void destroy_arena(Arena *arena) { free(arena->start); }
 
 void print_arena(Arena *arena) {
-  char *iterator = arena->start;
-  int line = 0;
-  while (iterator < arena->current) {
-    printf("%d ", *iterator);
-    iterator++;
-    if (line != 0 && line % 8 == 0)
-      puts("");
+  int line = 1;
+  for (char *iterator = arena->start; iterator < arena->current; iterator++) {
+    printf("0x%08x %c", *iterator, line % 8 == 0 ? '\n' : '\0');
     line++;
   }
+  puts("");
 }

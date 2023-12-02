@@ -3,3 +3,6 @@ just:
 
 test:
   mkdir -p build && clang -std=c99 -Wall -Wextra -g3 -lcriterion test.c -o ./build/test && ./build/test
+
+debug:
+  gdb ./build/main core
