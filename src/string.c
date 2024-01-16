@@ -24,7 +24,7 @@
 typedef struct String String;
 struct String {
   char *head;
-  int size; // u64 length
+  unsigned int size; // u64 length
 };
 
 String *create_string(char *string) {
@@ -52,19 +52,17 @@ String *join_strings(String *a, String *b) {
   return str;
 }
 
-String *arena_create_string(Arena *arena, char *string) {
-  String *str = arena_alloc(arena, sizeof(String));
-  int size = 0;
-  char *curr_char = string;
+String *arena_create_string(Arena *arena, char *text) {
+  String *string = arena_alloc(arena, sizeof(String));
+  unsigned int size = 0;
 
-  while (*curr_char != '\0') {
-    curr_char++;
+  for (char *curr_char = text; *curr_char != '\0'; curr_char++) {
     size++;
   }
 
-  str->head = string;
-  str->size = size;
-  return str;
+  string->head = text;
+  string->size = size;
+  return string;
 }
 
 String *arena_join_strings(Arena *arena, String *a, String *b) {
