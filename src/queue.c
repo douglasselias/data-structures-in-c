@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "types.c"
+
 typedef struct Node Node;
 struct Node {
   Node *next;
@@ -13,7 +15,7 @@ struct Node {
 typedef struct {
   Node *first;
   Node *last;
-  int size;
+  u64 size;
 } Queue;
 
 void enqueue(Queue *q, void *value) {
