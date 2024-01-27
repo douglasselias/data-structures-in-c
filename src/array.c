@@ -8,13 +8,13 @@ typedef struct {
 
 void array_append(char value, Array *array) {
   if (array->data == NULL) {
-    array->data = arena_alloc(array->arena, sizeof(char));
+    array->data = alloc_arena(array->arena, sizeof(char));
     array->data[0] = value;
     array->size++;
   } else {
     // Resize the array to accommodate the new element
-    arena_reset(array->arena);
-    char *newData = arena_alloc(array->arena, (array->size + 1) * sizeof(char));
+    reset_arena(array->arena);
+    char *newData = alloc_arena(array->arena, (array->size + 1) * sizeof(char));
     // Copy existing data to the new block
     for (int i = 0; i < array->size; i++) {
       newData[i] = array->data[i];
@@ -29,8 +29,8 @@ void array_append(char value, Array *array) {
 }
 
 void array_remove_by_index(Array *array, int index) {
-  arena_reset(array->arena);
-  char *newData = arena_alloc(array->arena, (array->size - 1) * sizeof(char));
+  reset_arena(array->arena);
+  char *newData = alloc_arena(array->arena, (array->size - 1) * sizeof(char));
   for (int i = 0; i < array->size; i++) {
     int new_index = i >= index ? i + 1 : i;
     newData[i] = array->data[new_index];

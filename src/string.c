@@ -4,74 +4,45 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "types.c"
 #include "arena.c"
 
-// typedef uint8_t   u8;
-// typedef char16_t  c16;
-// typedef int32_t   b32;
-// typedef int32_t   i32;
-// typedef uint32_t  u32;
-// typedef uint64_t  u64;
-// typedef float     f32;
-// typedef double    f64;
-// typedef uintptr_t uptr;
-// typedef char      byte;
-// typedef ptrdiff_t size;
-// typedef size_t    usize;
+typedef struct {
+  u8 *head;
+  u64 size;
+} String;
 
-// typedef uint64_t  u64;
-
-typedef struct String String;
-struct String {
-  char *head;
-  unsigned int size; // u64 length
-};
-
-String *create_string(char *string) {
-  String *str = malloc(sizeof(String));
-  int size = 0;
-  char *curr_char = string;
-
-  while (*curr_char != '\0') {
-    curr_char++;
-    size++;
-  }
-
-  str->head = string;
-  str->size = size;
-  return str;
+String *create_string(u8 *text) {
+  String *string = malloc(sizeof(String));
+  string->head = text;
+  string->size = strlen((char*)text);
+  return string;
 }
 
 String *join_strings(String *a, String *b) {
-  String *str = malloc(sizeof(String));
-  str->size = a->size + b->size;
-  char *c = malloc(sizeof(a->head) * str->size);
-  strcpy(c, a->head);
-  strcpy(c + a->size, b->head);
-  str->head = c;
-  return str;
+  String *string = malloc(sizeof(String));
+  string->size = a->size + b->size;
+  u8 *c = malloc(sizeof(a->head) * string->size);
+  strcpy((char*)c, (char*)a->head);
+  strcpy((char*)c + a->size, (char*)b->head);
+  string->head = c;
+  return string;
 }
 
-String *arena_create_string(Arena *arena, char *text) {
-  String *string = arena_alloc(arena, sizeof(String));
-  unsigned int size = 0;
-
-  for (char *curr_char = text; *curr_char != '\0'; curr_char++) {
-    size++;
-  }
-
+String *arena_create_string(Arena *arena, u8 *text) {
+  String *string = alloc_arena(arena, sizeof(String));
   string->head = text;
-  string->size = size;
+  string->size = strlen((char*)text);
   return string;
 }
 
 String *arena_join_strings(Arena *arena, String *a, String *b) {
-  String *str = arena_alloc(arena, sizeof(String));
+  String *str = alloc_arena(arena, sizeof(String));
   str->size = a->size + b->size;
   char *c = malloc(sizeof(a->head) * str->size);
-  strcpy(c, a->head);
-  strcpy(c + a->size, b->head);
-  str->head = c;
+  strcpy(c, (char*)a->head);
+  strcpy(c + a->size, (char*)b->head);
+  str->head = (u8*)c;
   return str;
 }
 

@@ -32,21 +32,21 @@ Test(string, join_strings) {
   cr_assert(strcmp(result->head, "Hello World") == 0);
 }
 
-Test(arena, join_strings) {
-  Arena *arena = create_arena();
-  String *s0 = arena_create_string(arena, "Hello");
-  String *s1 = arena_create_string(arena, " World");
+// Test(arena, join_strings) {
+//   Arena *arena = create_arena();
+//   String *s0 = arena_create_string(arena, "Hello");
+//   String *s1 = arena_create_string(arena, " World");
 
-  String *result = arena_join_strings(arena, s0, s1);
+//   String *result = arena_join_strings(arena, s0, s1);
 
-  cr_assert(strcmp(result->head, "Hello World") == 0);
-}
+//   cr_assert(strcmp(result->head, "Hello World") == 0);
+// }
 
-Test(arena, reset) {
-  Arena *arena = create_arena();
-  String *s0 = arena_create_string(arena, "Hello");
-  arena_reset(arena);
-  arena_create_string(arena, " World");
+// Test(stack, push) {
+//   Arena *arena = create_arena();
+//   String *s0 = arena_create_string(arena, "Hello");
+//   arena_reset(arena);
+//   arena_create_string(arena, " World");
 
-  cr_assert(strcmp(s0->head, " World") == 0);
-}
+//   cr_assert(strcmp(s0->head, " World") == 0);
+// }

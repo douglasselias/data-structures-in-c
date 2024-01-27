@@ -23,7 +23,7 @@ void insert_node(BinNode *root, int value, Arena *arena) {
 
   if (value <= current->value) {
     if (current->left == NULL) {
-      current->left = arena_alloc(arena, sizeof(BinNode));
+      current->left = alloc_arena(arena, sizeof(BinNode));
       current->left->left = NULL;
       current->left->right = NULL;
       current->left->value = value;
@@ -32,7 +32,7 @@ void insert_node(BinNode *root, int value, Arena *arena) {
     }
   } else {
     if (current->right == NULL) {
-      current->right = arena_alloc(arena, sizeof(BinNode));
+      current->right = alloc_arena(arena, sizeof(BinNode));
       current->right->left = NULL;
       current->right->right = NULL;
       current->right->value = value;
@@ -126,7 +126,7 @@ void traverse_breadth_first(BinNode *root) {
 
 int main() {
   Arena *arena = create_arena();
-  BinNode *root = arena_alloc(arena, sizeof(BinNode));
+  BinNode *root = alloc_arena(arena, sizeof(BinNode));
   root->left = NULL;
   root->right = NULL;
   root->value = 0;
