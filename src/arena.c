@@ -1,9 +1,3 @@
-/// infinite size arena (chain upgrades)
-/// using the mmu (no malloc)
-/// dynamic array that never relocates
-/// support sub-lifetime (pool allocator using free list) (malloc?)
-/// visualization && debugging (push & pop logs, timestamp)
-
 #pragma once
 
 #include <stdio.h>
@@ -15,6 +9,8 @@ typedef struct {
   u8 *start;
   u8 *current;
   u8 *end;
+  // Arena *previous;
+  // Arena *next;
 } Arena;
 
 Arena *create_arena(u64 size) {
