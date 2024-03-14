@@ -1,147 +1,87 @@
-#include <stdint.h>
-#include <stdio.h>
+#include<stdio.h>
+#include<math.h>
 
-#include "src/arena.c"
-#include "src/queue.c"
+typedef enum {
+  TRIANGLE,
+  CIRCLE,
+  SQUARE,
+  SHAPE_COUNT,
+} Shape;
 
-typedef uint64_t u64;
+typedef enum {
+  AREA,
+  PERIMETER,
+  FN_COUNT,
+} ShapeFns;
 
-typedef struct BinNode BinNode;
-struct BinNode {
-  BinNode *left;
-  BinNode *right;
-  int value;
-};
+typedef struct {
+  int base;
+  int height;
+} Triangle;
 
-void insert_node(BinNode *root, int value, Arena *arena) {
-  BinNode *current = root;
+typedef struct {
+  int radius;
+} Circle;
 
-  if (current->value == 0) {
-    current->value = value;
-    return;
-  }
+typedef struct {
+  int side;
+} Square;
 
-  if (value <= current->value) {
-    if (current->left == NULL) {
-      current->left = alloc_arena(arena, sizeof(BinNode));
-      current->left->left = NULL;
-      current->left->right = NULL;
-      current->left->value = value;
-    } else {
-      insert_node(current->left, value, arena);
-    }
-  } else {
-    if (current->right == NULL) {
-      current->right = alloc_arena(arena, sizeof(BinNode));
-      current->right->left = NULL;
-      current->right->right = NULL;
-      current->right->value = value;
-    } else {
-      insert_node(current->right, value, arena);
-    }
-  }
+void triangle_area(void* data, void* result) {
+  Triangle triangle = *(Triangle*)data;
+  *(int*)result = (triangle.base * triangle.height) / 2;
 }
 
-BinNode *remove_node(BinNode *root, int value) {
-  if (root == NULL)
-    return NULL;
-
-  if (value < root->value) {
-    root->left = remove_node(root->left, value);
-  } else if (value > root->value) {
-    root->right = remove_node(root->right, value);
-  } else {
-    // Node with only one child or no child
-    if (root->left == NULL) {
-      BinNode *new_root = root->right;
-      // delete root;
-      return new_root;
-    } else if (root->right == NULL) {
-      BinNode *new_root = root->left;
-      // delete root;
-      return new_root;
-    }
-
-    // Node with two children, find the in-order successor (smallest node in the
-    // right subtree)
-    BinNode *successor = root->right;
-    while (root->left != NULL) {
-      successor = root->left;
-    }
-
-    // Copy the in-order successor's data to this node
-    root->value = successor->value;
-
-    // Recursively delete the in-order successor
-    root->right = remove_node(root->right, successor->value);
-  }
-
-  return root;
+void triangle_perimeter(void* data, void* result) {
+  Triangle triangle = *(Triangle*)data; 
+  *(int*)result = triangle.base + sqrt(triangle.base * triangle.base + triangle.height * triangle.height) * 2;
 }
 
-void traverse_pre_order(BinNode *root) {
-  if (root == NULL)
-    return;
-  printf("Value: %d\n", root->value);
-  traverse_pre_order(root->left);
-  traverse_pre_order(root->right);
-}
-void traverse_in_order(BinNode *root) {
-  if (root == NULL)
-    return;
-  traverse_in_order(root->left);
-  printf("Value: %d\n", root->value);
-  traverse_in_order(root->right);
-}
-void traverse_post_order(BinNode *root) {
-  if (root == NULL)
-    return;
-  traverse_post_order(root->left);
-  traverse_post_order(root->right);
-  printf("Value: %d\n", root->value);
+void circle_area(void* data, void* result) {
+  Circle circle = *(Circle*)data;
+  *(int*)result = 3.14 * circle.radius * circle.radius;
 }
 
-void traverse_depth_first(BinNode *root) {
-  if (root == NULL)
-    return;
-  printf("Value: %d\n", root->value);
-  traverse_depth_first(root->left);
-  traverse_depth_first(root->right);
+void circle_perimeter(void* data, void* result) {
+  Circle circle = *(Circle*)data;
+  *(int*)result = 2 * 3.14 * circle.radius;
 }
 
-void traverse_breadth_first(BinNode *root) {
-  Queue q = {0};
-  enqueue(&q, (void *)root);
+void square_area(void* data, void* result) {
+  Square square = *(Square*)data;
+  *(int*)result = square.side * square.side;
+}
 
-  while (q.size > 0) {
-    BinNode *bin_node = dequeue(&q);
-    printf("Value: %d\n", bin_node->value);
-
-    if (bin_node->left != NULL)
-      enqueue(&q, (void *)bin_node->left);
-    if (bin_node->right != NULL)
-      enqueue(&q, (void *)bin_node->right);
-  }
+void square_perimeter(void* data, void* result) {
+  Square square = *(Square*)data;
+  *(int*)result = 4 * square.side;
 }
 
 int main() {
-  Arena *arena = create_arena();
-  BinNode *root = alloc_arena(arena, sizeof(BinNode));
-  root->left = NULL;
-  root->right = NULL;
-  root->value = 0;
+  void (*type_table[SHAPE_COUNT][FN_COUNT])(void*, void*) = {
+      {triangle_area, triangle_perimeter},  // Function pointers for Triangle: {AREA, PERIMETER}
+      {circle_area, circle_perimeter},      // Function pointers for Circle: {AREA, PERIMETER}
+  };
 
-  int values[5] = {4, 9, 2, 8, 5};
-  for (int i = 0; i < 5; i++) {
-    insert_node(root, values[i], arena);
-  }
+  Triangle triangle = {10, 10};
+  int triangle_area_result;
+  type_table[TRIANGLE][AREA](&triangle, &triangle_area_result);
+  printf("Result: %d\n", triangle_area_result);
 
-  remove_node(root, 9);// root doesnt work
+  Circle circle = {10};
+  int circle_perimeter_result;
+  type_table[CIRCLE][PERIMETER](&circle, &circle_perimeter_result);
+  printf("Result: %d\n", circle_perimeter_result);
 
-  // traverse_pre_order(root);
-  // traverse_in_order(root);
-  // traverse_post_order(root);
-  // traverse_depth_first(root);
-  traverse_breadth_first(root);
-  return 0;
+  type_table[SQUARE][AREA] = square_area;
+  type_table[SQUARE][PERIMETER] = square_perimeter;
+
+  Square square = {10};
+  int square_area_result;
+  type_table[SQUARE][AREA](&square,  square_area_result);
+  printf("Result: %d\n", square_area_result);
+
+  int square_perimeter_result;
+  type_table[SQUARE][PERIMETER](&square, &square_perimeter_result);
+  printf("Result: %d\n", square_perimeter_result);
 }

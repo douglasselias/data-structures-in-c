@@ -69,8 +69,7 @@ void delete_dllist(DLList *dllist, u8 value) {
 
 void print_dllist(DLList *dllist) {
   puts("DLList");
-  for (Node *current = dllist->first; current != NULL;
-       current = current->next) {
+  for (Node *current = dllist->first; current != NULL; current = current->next) {
     printf("0x%x\n", current->value);
   }
 }
