@@ -1,4 +1,5 @@
 #include "arena.c"
+#include "queue.c"
 
 // typedef u8 bin_value;
 
@@ -63,17 +64,13 @@ void remove_binary_tree(Arena* arena, BinNode** root, u8 value) {
     if((*root)->left != NULL && (*root)->right != NULL) {
       u8 tmp_value = (*root)->right->value;
       *root = (*root)->left;
-      insert_binary_tree(arena, root, tmp_value);
+      insert_binary_tree(arena, *root, tmp_value);
     } else if((*root)->left != NULL) {
       *root = (*root)->left;
     } else if((*root)->right != NULL) {
       *root = (*root)->right;
     } else {
-      // printf("Root Value: %d, Value: %d\n", root->value, value);
       *root = NULL;
-      // memset(root, NULL, sizeof(BinNode));
-      // root = NULL;
-      // printf("Root Value: %d\n", root->value);
     }
     return;
   }
@@ -83,7 +80,6 @@ void remove_binary_tree(Arena* arena, BinNode** root, u8 value) {
       return;
     }
 
-    puts("is on the left");
     remove_binary_tree(arena, &(*root)->left, value);
   } else {
     if((*root)->right == NULL) {
@@ -94,9 +90,36 @@ void remove_binary_tree(Arena* arena, BinNode** root, u8 value) {
   }
 }
 
+#define MAX(i, j) (((i) > (j)) ? (i) : (j))
+u64 binary_tree_height(BinNode* root) {
+  if(root == NULL) return 0;
+  return 1 + MAX(binary_tree_height(root->left), binary_tree_height(root->right));
+}
+
 void print_binary_tree(BinNode* root) {
+  /// @note: this is dfs
   if(root == NULL) return;
   printf("%d, ", root->value);
   print_binary_tree(root->left);
   print_binary_tree(root->right);
+}
+
+void print_binary_tree_bf(BinNode* root) {
+  Queue q = {0};
+  enqueue(&q, root);
+  // u64 line = 0;
+
+  while(q.size > 0) {
+    BinNode* current_node = dequeue(&q);
+    if(current_node == NULL) break;
+    printf("%d", current_node->value);
+
+    if(current_node->left != NULL) {
+      enqueue(&q, current_node->left);
+    }
+
+    if(current_node->right != NULL) {
+      enqueue(&q, current_node->right);
+    }
+  }
 }

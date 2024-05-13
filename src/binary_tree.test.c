@@ -44,19 +44,20 @@ Test(binary_tree_test, remove_node_correctly) {
 
   insert_binary_tree(binary_tree_arena, binary_tree, 5);
   insert_binary_tree(binary_tree_arena, binary_tree, 2);
-  // insert_binary_tree(binary_tree_arena, binary_tree, 7);
-  // insert_binary_tree(binary_tree_arena, binary_tree, 1);
-  // insert_binary_tree(binary_tree_arena, binary_tree, 9);
+  insert_binary_tree(binary_tree_arena, binary_tree, 7);
+  insert_binary_tree(binary_tree_arena, binary_tree, 6);
+  insert_binary_tree(binary_tree_arena, binary_tree, 8);
 
   remove_binary_tree(binary_tree_arena, &binary_tree, 2);
-  // remove_binary_tree(binary_tree_arena, binary_tree, 1);
+  remove_binary_tree(binary_tree_arena, &binary_tree, 7);
   // remove_binary_tree(binary_tree_arena, binary_tree, 9);
 
-  print_binary_tree(binary_tree);
+  print_binary_tree_bf(binary_tree);
+  // printf("Height: %lu\n",binary_tree_height(binary_tree));
 
   cr_assert(search_binary_tree(binary_tree, 2) == false);
-  // cr_assert(search_binary_tree(binary_tree, 1) == true);
-  // cr_assert(search_binary_tree(binary_tree, 9) == false);
+  cr_assert(search_binary_tree(binary_tree, 7) == false);
+  cr_assert(search_binary_tree(binary_tree, 6) == true);
 
   destroy_arena(binary_tree_arena);
 }
