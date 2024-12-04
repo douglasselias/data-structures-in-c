@@ -21,8 +21,8 @@ set compiler_base_flags=%better_output% %basic_optimizations% %warnings% %disabl
 set compiler_debug_flags=/Z7 /Zo /RTCc
 @REM set compiler_release_flags=/Gw /GL /O2
 
-cl %compiler_base_flags% %compiler_debug_flags% "..\src\lru_cache.c"
+cl %compiler_base_flags% %compiler_debug_flags% "..\src\string.c"
 
-lru_cache.exe
+string.exe
 
 popd
