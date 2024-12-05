@@ -113,42 +113,119 @@ String** split(String text, u8 delim, u64 *size) {
   return strings;
 }
 
-int main() {
-  // STR(hello, "Hello");
-  // prints(hello);
-  // puts("");
+bool string_equal(String a, String b) {
+  if(a.size != b.size) return false;
 
-  // to_upper(&hello);
-  // prints(hello);
+  bool is_equal = true;
+  while(a.size--) {
+    if(a.head[a.size] != b.head[a.size]) {
+      is_equal = false;
+      break;
+    }
+  }
 
-  // puts("");
+  return is_equal;
+}
 
+#include "greatest.h"
+
+/* A test runs various assertions, then calls PASS(), FAIL(), or SKIP(). */
+TEST x_should_equal_1(void) {
+    int x = 1;
+    /* Compare, with an automatic "1 != x" failure message */
+    ASSERT_EQ(1, x);
+
+    /* Compare, with a custom failure message */
+    ASSERT_EQm("Yikes, x doesn't equal 1", 1, x);
+
+    /* Compare, and if they differ, print both values,
+     * formatted like `printf("Expected: %d\nGot: %d\n", 1, x);` */
+    ASSERT_EQ_FMT(1, x, "%d");
+    PASS();
+}
+
+TEST strings_should_be_equal(void) {
+  STR(hello, "Hello");
+  ASSERT(strcmp((const char*)hello.head, "World") != 0);
+  PASS();
+}
+
+TEST should_split_strings(void) {
   STR(a, "Nintendo");
   STR(b, " ");
   STR(c, "Switch");
-
   String words[] = {a,b,c};
+
   STR(result, "");
   for(u8 i = 0; i < 3; i++) {
     result = concat(result, words[i]);
   }
 
-  // prints(result);
-
   u64 ss_size = 0;
   String **ss = split(result, ' ', &ss_size);
-  // printf("Size: %lld\n", ss_size);
-
-  // String z = *(ss[0]);
-  // prints(z);
-
-  for(u64 i = 0; i < ss_size; i++) {
-    prints(*ss[i]);
-    puts("");
-  }
-
-  return 0;
+  ASSERT(string_equal(*ss[0], a));
+  ASSERT(string_equal(*ss[1], c));
+  PASS();
 }
+
+/* Suites can group multiple tests with common setup. */
+SUITE(the_suite) {
+    RUN_TEST(x_should_equal_1);
+    RUN_TEST(strings_should_be_equal);
+    RUN_TEST(should_split_strings);
+}
+
+/* Add definitions that need to be in the test runner's main file. */
+GREATEST_MAIN_DEFS();
+
+int main(int argc, char **argv) {
+    GREATEST_MAIN_BEGIN();      /* command-line options, initialization. */
+
+    /* Individual tests can be run directly in main, outside of suites. */
+    /* RUN_TEST(x_should_equal_1); */
+
+    /* Tests can also be gathered into test suites. */
+    RUN_SUITE(the_suite);
+
+    GREATEST_MAIN_END();        /* display results */
+}
+
+// int main() {
+//   // STR(hello, "Hello");
+//   // prints(hello);
+//   // puts("");
+
+//   // to_upper(&hello);
+//   // prints(hello);
+
+//   // puts("");
+
+//   STR(a, "Nintendo");
+//   STR(b, " ");
+//   STR(c, "Switch");
+
+//   String words[] = {a,b,c};
+//   STR(result, "");
+//   for(u8 i = 0; i < 3; i++) {
+//     result = concat(result, words[i]);
+//   }
+
+//   // prints(result);
+
+//   u64 ss_size = 0;
+//   String **ss = split(result, ' ', &ss_size);
+//   // printf("Size: %lld\n", ss_size);
+
+//   // String z = *(ss[0]);
+//   // prints(z);
+
+//   for(u64 i = 0; i < ss_size; i++) {
+//     prints(*ss[i]);
+//     puts("");
+//   }
+
+//   return 0;
+// }
 
 
 // #include <stdio.h>
